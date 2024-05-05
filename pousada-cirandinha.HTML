@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pousada Cirandinha</title>
+    <!-- Adicionando Bootstrap via CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="toggleStartForm()">Início</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="toggleClientsForm()">Gerenciar clientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="toggleRoomsForm()">Gerenciar quartos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="toggleReservationsForm()">Gerenciar reservas</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div class="container mt-5">
+
+        <div id="startForm" style="display: none;">
+            <h2 style="text-align: center;">Controle de reservas</h2>
+            <div class="d-flex justify-content-center">
+                <input class="m-3" type="date" id="dataAtual" style="width: 200px;" onchange="filtrarReservasChegada(); filtrarReservasSaida();">
+            </div>
+
+            <div class="mt-3">
+                <h2>Reservas chegando:</h2>
+                    <table id="reservasTable" class="w-100">
+                    <thead>
+                    <tr>
+                        <th style="width: 20%;">Nome do Cliente</th>
+                        <th style="width: 20%;">Número do Quarto</th>
+                        <th style="width: 20%;">Data de Check-in</th>
+                        <th style="width: 20%;">Data de Check-out</th>
+                        <th style="width: 20%;">Valor Total</th>
+                    </tr>
+                    </thead>
+                    <tbody id="reservasChegadaBody"></tbody>
+                    </table>
+
+                <h3 class="mt-3">Reservas saíndo:</h3>
+                    <table id="reservasTable" class="w-100">
+                    <thead>
+                    <tr>
+                        <th style="width: 20%;">Nome do Cliente</th>
+                        <th style="width: 20%;">Número do Quarto</th>
+                        <th style="width: 20%;">Data de Check-in</th>
+                        <th style="width: 20%;">Data de Check-out</th>
+                        <th style="width: 20%;">Valor Total</th>
+                    </tr>
+                    </thead>
+                    <tbody id="reservasSaidaBody"></tbody>
+                    </table>
+            </div>
+
+        </div>
+
+        <div id="clientsForm" style="display: none;">
+            <h3>Clientes</h3>
+            <div class="form-group">
+                <label for="clientNameInput">Nome do Cliente:</label>
+                <input type="text" class="form-control" id="clientNameInput" placeholder="Nome do cliente">
+            </div>
+            <div class="form-group">
+                <label for="clientCPFInput">CPF/CNPJ:</label>
+                <input type="number" class="form-control" id="clientCPFInput" placeholder="CPF/CNPJ">
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="isActiveCheckboxClient">
+                <label class="form-check-label" for="isActiveCheckboxClient">Ativo</label>
+            </div>
+            <div id="editButtonsClient" class="mt-3">
+                <button class="btn btn-primary" onclick="createOrUpdateClient()">Adicionar Cliente</button>
+            </div>
+            <ul id="clientList" class="mt-3">
+                <!-- Lista de clientes será exibida aqui -->
+            </ul>
+
+        </div>
+
+        <div id="roomsForm" style="display: none;">
+            <h3>Quartos</h3>
+            <div class="form-group">
+                <label for="roomNumberInput">Número do Quarto:</label>
+                <input type="text" class="form-control" id="roomNumberInput" placeholder="Número do quarto">
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="isCleanCheckboxRooms">
+                <label class="form-check-label" for="isCleanCheckboxRooms">Limpo</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="isActiveCheckboxRooms">
+                <label class="form-check-label" for="isActiveCheckboxRooms">Ativo</label>
+            </div>
+            <div id="editButtonsRooms" class="mt-3">
+                <button class="btn btn-primary" onclick="createOrUpdateRoom()">Adicionar Quarto</button>
+            </div>
+            <ul id="roomList" class="mt-3">
+                <!-- Lista de quartos será exibida aqui -->
+            </ul>
+        </div>
+
+        <div id="reservationsForm" style="display: none;">
+            <h3>Cadastro de Reservas</h3>
+            <!-- Formulário de cadastro de reservas -->
+            <div class="form-group">
+                <label for="clientSelect">Cliente:</label>
+                <select class="form-control" id="clientSelect">
+                    <!-- Opções de clientes serão adicionadas aqui -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="roomSelect">Quarto:</label>
+                <select class="form-control" id="roomSelect">
+                    <!-- Opções de quartos serão adicionadas aqui -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="checkInDateInput">Data de Chegada:</label>
+                <input type="date" class="form-control" id="checkInDateInput">
+            </div>
+            <div class="form-group">
+                <label for="checkOutDateInput">Data de Saída:</label>
+                <input type="date" class="form-control" id="checkOutDateInput">
+            </div>
+            <div class="form-group">
+                <label for="valueInput">Valor Total:</label>
+                <input type="number" class="form-control" id="valueInput">
+            </div>
+            <div id="editReservationButtons" class="mt-3">
+                <button class="btn btn-primary" onclick="createOrUpdateReservation()">Adicionar Reserva</button>
+            </div>
+            <ul id="reservationList" class="mt-3">
+                <!-- Lista de reservas será exibida aqui -->
+            </ul>
+        </div>
+        <div id="alertArea" class="mt-3">
+            <!-- Mensagens de aviso serão exibidas aqui -->
+        </div>
+    </div>
+
+    <!-- Adicionando script do Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Função para alternar a exibição do formulário de cadastro de clientes
+        let paginaExibida = null
+        let mensagem = []
+
+        function paginaAberta(aberto = "startForm") {
+            paginaExibia = document.getElementById(aberto)
+            paginaExibia.style.display = 'block'
+
+        }
+
+        function toggleStartForm() {
+            filtrarReservasChegada();
+            filtrarReservasSaida();
+            const clientsForm = document.getElementById('clientsForm');
+            const roomsForm = document.getElementById('roomsForm');
+            const reservationsForm = document.getElementById('reservationsForm');
+            const startForm = document.getElementById('startForm');
+            startForm.style.display = 'block';
+            clientsForm.style.display = 'none';
+            roomsForm.style.display = 'none';
+            reservationsForm.style.display = 'none';
+            paginaExibida = 'startForm'
+            localStorage.setItem('paginaExibida', JSON.stringify(paginaExibida));
+            saveData();
+        }
+
+        function toggleClientsForm() {
+            const clientsForm = document.getElementById('clientsForm');
+            const roomsForm = document.getElementById('roomsForm');
+            const reservationsForm = document.getElementById('reservationsForm');
+            const startForm = document.getElementById('startForm');
+            startForm.style.display = 'none';
+            clientsForm.style.display = 'block';
+            roomsForm.style.display = 'none';
+            reservationsForm.style.display = 'none';
+            paginaExibida = 'clientsForm'
+            localStorage.setItem('paginaExibida', JSON.stringify(paginaExibida));
+            saveData();
+        }
+
+        // Função para alternar a exibição do formulário de cadastro de quartos
+        function toggleRoomsForm() {
+            const clientsForm = document.getElementById('clientsForm');
+            const roomsForm = document.getElementById('roomsForm');
+            const reservationsForm = document.getElementById('reservationsForm');
+            const startForm = document.getElementById('startForm');
+            startForm.style.display = 'none';
+            clientsForm.style.display = 'none';
+            roomsForm.style.display = 'block';
+            reservationsForm.style.display = 'none';
+            paginaExibida = 'roomsForm'
+            localStorage.setItem('paginaExibida', JSON.stringify(paginaExibida));
+            saveData();
+        }
+
+        // Função para alternar a exibição do formulário de cadastro de reservas
+        function toggleReservationsForm() {
+            const clientsForm = document.getElementById('clientsForm');
+            const roomsForm = document.getElementById('roomsForm');
+            const reservationsForm = document.getElementById('reservationsForm');
+            const startForm = document.getElementById('startForm');
+            startForm.style.display = 'none';
+            clientsForm.style.display = 'none';
+            roomsForm.style.display = 'none';
+            reservationsForm.style.display = 'block';
+            paginaExibida = 'reservationsForm'
+            localStorage.setItem('paginaExibida', JSON.stringify(paginaExibida));
+            saveData();
+        }
+
+        // Estrutura de dados para clientes
+        let clients = [];
+
+        // Carregar dados salvos ao carregar a página
+
+        // Função para adicionar ou atualizar um cliente
+        function createOrUpdateClient() {
+            const clientNameInput = document.getElementById('clientNameInput');
+            const clientName = clientNameInput.value.trim();
+
+            const clientCPFInput = document.getElementById('clientCPFInput');
+            const clientCPF = clientCPFInput.value.trim();
+
+            const isActiveCheckbox = document.getElementById('isActiveCheckboxClient');
+            const isActive = isActiveCheckbox.checked;
+
+            if (clientName === '') {
+                displayMessage('Por favor, digite o nome do cliente.', 'alert-danger');
+                return;
+            }
+
+            if (clientCPF === '') {
+                displayMessage('Por favor, digite o CPF/CNPJ do cliente.', 'alert-danger');
+                return;
+            }
+
+            const updateButton = document.getElementById('updateButton');
+            if (updateButton) {
+                // Se o botão de atualização estiver presente, significa que estamos atualizando um cliente existente
+                const clientId = updateButton.dataset.clientId;
+                updateClient(clientId, clientName, clientCPF, isActive);
+            } else {
+                // Caso contrário, estamos criando um novo cliente
+                createClient(clientName, clientCPF, isActive);
+            }
+
+            // Limpar campos
+            clientNameInput.value = '';
+            clientCPFInput.value = '';
+            isActiveCheckbox.checked = false;
+        }
+
+        // Função para criar um novo cliente
+        function createClient(clientName, clientCPF, isActive) {
+            clients.push({ id: generateId(), name: clientName, cpf_cnpj: clientCPF, active: isActive });
+            displayClients();
+            saveData('Cliente adicionado com sucesso.', 'alert-success'); // Salvar dados
+        }
+
+        // Função para exibir os clientes na lista
+        function displayClients() {
+            const clientList = document.getElementById('clientList');
+            clientList.innerHTML = ''; // Limpar a lista antes de exibir novamente
+
+            clients.forEach(client => {
+                const li = document.createElement('li');
+                li.textContent = `Nome: ${client.name} - CPF/CNPJ: ${client.cpf_cnpj} - Ativo: `;
+
+                // Checkbox não editável para indicar se o cliente está ativo ou não
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.disabled = true;
+                checkbox.checked = client.active;
+                li.appendChild(checkbox);
+
+                // Botão para editar cliente
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Editar';
+                editButton.classList.add('btn', 'btn-sm', 'btn-primary', 'ml-2');
+                editButton.onclick = () => setClientForEdit(client.id, client.name, client.cpf_cnpj, client.active);
+                li.appendChild(editButton);
+
+                // Botão para excluir cliente
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Excluir';
+                deleteButton.classList.add('btn', 'btn-sm', 'btn-danger', 'ml-2');
+                deleteButton.onclick = () => deleteClient(client.id);
+                li.appendChild(deleteButton);
+
+                clientList.appendChild(li);
+            });
+        }
+
+        // Função para definir o cliente para edição
+        function setClientForEdit(clientId, clientName, clientCPF, isActive) {
+            const clientNameInput = document.getElementById('clientNameInput');
+            clientNameInput.value = clientName;
+
+            const clientCPFInput = document.getElementById('clientCPFInput');
+            clientCPFInput.value = clientCPF;
+
+            const isActiveCheckbox = document.getElementById('isActiveCheckboxClient');
+            isActiveCheckbox.checked = isActive;
+
+            const editButtons = document.getElementById('editButtonsClient');
+            editButtons.innerHTML = ''; // Limpar os botões antes de adicionar os novos
+
+            // Ocultar a lista de clientes
+            const clientList = document.getElementById('clientList');
+            clientList.style.display = 'none';
+
+            // Botão para atualizar cliente
+            const updateButton = document.createElement('button');
+            updateButton.textContent = 'Atualizar';
+            updateButton.classList.add('btn', 'btn-primary', 'mr-2');
+            updateButton.id = 'updateButton';
+            updateButton.dataset.clientId = clientId;
+            updateButton.onclick = () => updateClient(clientId);
+            editButtons.appendChild(updateButton);
+
+            // Botão para cancelar edição
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancelar';
+            cancelButton.classList.add('btn', 'btn-secondary');
+            cancelButton.onclick = cancelEditClient;
+            editButtons.appendChild(cancelButton);
+        }
+
+        // Função para cancelar edição
+        function cancelEditClient() {
+            const editButtons = document.getElementById('editButtonsClient');
+            editButtons.innerHTML = ''; // Limpar os botões
+
+            // Mostrar a lista de clientes novamente
+            const clientList = document.getElementById('clientList');
+            clientList.style.display = 'block';
+
+            // Limpar campos
+            document.getElementById('clientNameInput').value = '';
+            document.getElementById('clientCPFInput').value = '';
+            document.getElementById('isActiveCheckboxClient').checked = false;
+
+            const addButton = document.createElement('button');
+            addButton.textContent = 'Adicionar Cliente';
+            addButton.classList.add('btn', 'btn-primary');
+            addButton.onclick = createOrUpdateClient;
+            editButtons.appendChild(addButton);
+        }
+
+        // Função para atualizar um cliente existente
+        function updateClient(clientId) {
+            const clientNameInput = document.getElementById('clientNameInput');
+            const newClientName = clientNameInput.value.trim();
+
+            const clientCPFInput = document.getElementById('clientCPFInput');
+            const newClientCPF = clientCPFInput.value.trim();
+
+            const isActiveCheckbox = document.getElementById('isActiveCheckboxClient');
+            const newIsActive = isActiveCheckbox.checked;
+
+            if (newClientName === '') {
+                displayMessage('Por favor, digite o novo nome do cliente.', 'alert-danger');
+                return;
+            }
+
+            if (newClientCPF === '') {
+                displayMessage('Por favor, digite o novo CPF/CNPJ do cliente.', 'alert-danger');
+                return;
+            }
+
+            const clientIndex = clients.findIndex(client => client.id === clientId);
+            if (clientIndex !== -1) {
+                clients[clientIndex].name = newClientName;
+                clients[clientIndex].cpf_cnpj = newClientCPF;
+                clients[clientIndex].active = newIsActive;
+                displayClients();
+                saveData('Cliente atualizado com sucesso.', 'alert-success'); // Salvar dados
+                cancelEditClient(); // Limpar o formulário de edição
+            }
+        }
+
+        // Função para excluir um cliente
+        function deleteClient(clientId) {
+            clients = clients.filter(client => client.id !== clientId);
+            displayClients();
+            saveData('Cliente excluído com sucesso.', 'alert-warning'); // Salvar dados
+        }
+
+        // Estrutura de dados para quartos
+        let rooms = [];
+
+        // Função para adicionar ou atualizar um quarto
+        function createOrUpdateRoom() {
+            const roomNumberInput = document.getElementById('roomNumberInput');
+            const roomNumber = roomNumberInput.value.trim();
+
+            const isActiveCheckbox = document.getElementById('isActiveCheckboxRooms');
+            const isActive = isActiveCheckbox.checked;
+            const isCleanCheckboxRooms = document.getElementById('isCleanCheckboxRooms');
+            const isClean = isCleanCheckboxRooms.checked;
+
+            if (roomNumber === '' ) {
+                displayMessage('Por favor, digite o número do quarto.', 'alert-danger');
+                return;
+            }
+
+            const updateButton = document.getElementById('updateButton');
+            if (updateButton) {
+                // Se o botão de atualização estiver presente, significa que estamos atualizando um quarto existente
+                const roomId = updateButton.dataset.roomId;
+                updateRoom(roomId, roomNumber, isActive, isClean);
+            } else {
+                // Caso contrário, estamos criando um novo quarto
+                createRoom(roomNumber, isActive, isClean);
+            }
+
+            // Limpar campos
+            roomNumberInput.value = '';
+            isActiveCheckbox.checked = false;
+        }
+
+        // Função para criar um novo quarto
+        function createRoom(roomNumber, isActive, isClean) {
+            rooms.push({ id: generateId(), number: roomNumber, active: isActive, clean: isClean });
+            displayRooms();
+            saveData('Quarto adicionado com sucesso.', 'alert-success'); // Salvar dados
+        }
+
+        // Função para exibir os quartos na lista
+        function displayRooms() {
+            const roomList = document.getElementById('roomList');
+            roomList.innerHTML = ''; // Limpar a lista antes de exibir novamente
+
+            rooms.forEach(room => {
+                const li = document.createElement('li');
+                li.textContent = `Número: ${room.number} | Limpo: ${room.clean ? 'Sim' : 'Não'} | Ativo: ${room.active ? 'Sim' : 'Não'}`;
+
+                // Botão para editar quarto
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Editar';
+                editButton.classList.add('btn', 'btn-sm', 'btn-primary', 'ml-2');
+                editButton.onclick = () => setRoomForEdit(room.id, room.number, room.active, room.clean);
+                li.appendChild(editButton);
+
+                // Botão para excluir quarto
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Excluir';
+                deleteButton.classList.add('btn', 'btn-sm', 'btn-danger', 'ml-2');
+                deleteButton.onclick = () => deleteRoom(room.id);
+                li.appendChild(deleteButton);
+
+                roomList.appendChild(li);
+            });
+        }
+
+        // Função para definir o quarto para edição
+        // Função para definir o quarto para edição
+        function setRoomForEdit(roomId, roomNumber, isActive, isClean) {
+            const roomNumberInput = document.getElementById('roomNumberInput');
+            roomNumberInput.value = roomNumber;
+
+            const isActiveCheckbox = document.getElementById('isActiveCheckboxRooms');
+            isActiveCheckbox.checked = isActive;
+
+            const isCleanCheckbox = document.getElementById('isCleanCheckboxRooms');
+            isCleanCheckbox.checked = isClean;
+
+            const editButtons = document.getElementById('editButtonsRooms');
+            editButtons.innerHTML = ''; // Limpar os botões antes de adicionar os novos
+
+            // Ocultar a lista de quartos
+            const roomList = document.getElementById('roomList');
+            roomList.style.display = 'none';
+
+            // Botão para atualizar quarto
+            const updateButton = document.createElement('button');
+            updateButton.textContent = 'Atualizar';
+            updateButton.classList.add('btn', 'btn-primary', 'mr-2');
+            updateButton.id = 'updateButton';
+            updateButton.dataset.roomId = roomId;
+            updateButton.onclick = () => updateRoom(roomId);
+            editButtons.appendChild(updateButton);
+
+            // Botão para cancelar edição
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancelar';
+            cancelButton.classList.add('btn', 'btn-secondary');
+            cancelButton.onclick = cancelEditRoom;
+            editButtons.appendChild(cancelButton);
+        }
+
+
+        // Função para cancelar edição
+        function cancelEditRoom() {
+            const editButtons = document.getElementById('editButtonsRooms');
+            editButtons.innerHTML = ''; // Limpar os botões
+
+            // Exibir a lista de quartos novamente
+            const roomList = document.getElementById('roomList');
+            roomList.style.display = 'block';
+
+            // Limpar campos
+            document.getElementById('roomNumberInput').value = '';
+            document.getElementById('isActiveCheckboxRooms').checked = false;
+            document.getElementById('isCleanCheckboxRooms').checked = false;
+
+            const addButton = document.createElement('button');
+            addButton.textContent = 'Adicionar Quarto';
+            addButton.classList.add('btn', 'btn-primary');
+            addButton.onclick = createOrUpdateRoom;
+            editButtons.appendChild(addButton);
+        }
+
+
+        // Função para atualizar um quarto existente
+        function updateRoom(roomId) {
+            const roomNumberInput = document.getElementById('roomNumberInput');
+            const newRoomNumber = roomNumberInput.value.trim();
+
+            const isActiveCheckbox = document.getElementById('isActiveCheckboxRooms');
+            const newIsActive = isActiveCheckbox.checked;
+
+            const isCleanCheckbox = document.getElementById('isCleanCheckboxRooms');
+            const newIsClean = isCleanCheckbox.checked;
+
+            if (newRoomNumber === '') {
+                displayMessage('Por favor, digite o novo número do quarto.', 'alert-danger');
+                return;
+            }
+
+            const roomIndex = rooms.findIndex(room => room.id === roomId);
+            if (roomIndex !== -1) {
+                rooms[roomIndex].number = newRoomNumber;
+                rooms[roomIndex].number = newIsClean;
+                rooms[roomIndex].active = newIsActive;
+                displayRooms();
+                saveData('Quarto atualizado com sucesso.', 'alert-success'); // Salvar dados
+                cancelEditRoom(); // Limpar o formulário de edição
+            }
+        }
+
+        // Função para excluir um quarto
+        function deleteRoom(roomId) {
+            rooms = rooms.filter(room => room.id !== roomId);
+            displayRooms();
+            saveData('Quarto excluído com sucesso.', 'alert-warning'); // Salvar dados
+        }
+
+        let reservations = [];
+
+        window.onload = function () {
+            if (localStorage.getItem('clients')) {
+                clients = JSON.parse(localStorage.getItem('clients'));
+            }
+            if (localStorage.getItem('rooms')) {
+                rooms = JSON.parse(localStorage.getItem('rooms'));
+            }
+            if (localStorage.getItem('reservations')) {
+                reservations = JSON.parse(localStorage.getItem('reservations'));
+            }
+            if (localStorage.getItem('paginaExibida')) {
+                paginaExibida = JSON.parse(localStorage.getItem('paginaExibida'));
+            } else {
+                paginaExibida = "startForm"
+            }
+            if (localStorage.getItem('mensagem')) {
+                mensagem = JSON.parse(localStorage.getItem('mensagem'));
+            }
+            if (localStorage.getItem('dataAtual')) {
+                dataAtual = JSON.parse(localStorage.getItem('dataAtual'));
+            } else {
+                dataAtual = new Date().toISOString().split('T')[0];
+                document.getElementById('dataAtual').value = dataAtual;
+            }
+
+            if (paginaExibida == "startForm"){
+                    filtrarReservasChegada();
+                    filtrarReservasSaida();
+                }
+
+            displayClients();
+            displayRooms();
+            populateDropdowns();
+            displayReservations();
+            displayMessage(mensagem[0], mensagem[1]);
+            paginaAberta(paginaExibida);
+        };
+
+        function populateDropdowns() {
+            const clientSelect = document.getElementById('clientSelect');
+            const roomSelect = document.getElementById('roomSelect');
+
+            // Limpar os dropdowns antes de adicionar as opções
+            clientSelect.innerHTML = '<option value="">Selecione</option>';
+            roomSelect.innerHTML = '<option value="">Selecione</option>';
+
+            // Adicionar opções de clientes ativos
+            clients.forEach(client => {
+                if (client.active) {
+                    const option = document.createElement('option');
+                    option.value = client.id;
+                    option.textContent = client.name + ' - ' + client.cpf_cnpj;
+                    clientSelect.appendChild(option);
+                }
+            });
+
+            // Adicionar opções de quartos ativos
+            rooms.forEach(room => {
+                if (room.active) {
+                    const option = document.createElement('option');
+                    option.value = room.id;
+                    option.textContent = room.number;
+                    roomSelect.appendChild(option);
+                }
+            });
+        }
+
+        // Função para adicionar ou atualizar uma reserva
+        function createOrUpdateReservation() {
+            const clientId = document.getElementById('clientSelect').value;
+            const roomId = document.getElementById('roomSelect').value;
+            const checkInDate = document.getElementById('checkInDateInput').value;
+            const checkOutDate = document.getElementById('checkOutDateInput').value;
+            const valueNumber = document.getElementById('valueInput').value;
+
+            if (!clientId || !roomId || !checkInDate || !checkOutDate || !valueNumber) {
+                displayMessage('Por favor, preencha todos os campos.', 'alert-danger');
+                return;
+            }
+
+            const reservationId = generateId();
+            const reservation = {
+                id: reservationId,
+                clientId: clientId,
+                roomId: roomId,
+                checkInDate: checkInDate,
+                checkOutDate: checkOutDate,
+                value: valueNumber
+            };
+
+            reservations.push(reservation);
+            saveData('Reserva adicionada com sucesso.', 'alert-success');
+            displayReservations();
+        }
+
+        // Função para excluir uma reserva
+        function deleteReservation(reservationId) {
+            reservations = reservations.filter(reservation => reservation.id !== reservationId);
+            saveData('Reserva excluída com sucesso.', 'alert-warning');
+            displayReservations();
+        }
+
+        // Função para exibir as reservas na lista
+        function displayReservations() {
+            const reservationList = document.getElementById('reservationList');
+            reservationList.innerHTML = ''; // Limpar a lista antes de exibir novamente
+
+            reservations.forEach(reservation => {
+                const li = document.createElement('li');
+                li.textContent = `Cliente: ${getClientName(reservation.clientId)} | Quarto: ${getRoomNumber(reservation.roomId)} | Check-in: ${reservation.checkInDate} | Check-out: ${reservation.checkOutDate} | Valor total: ${reservation.value}`;
+
+                // Botão para excluir reserva
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Excluir';
+                deleteButton.classList.add('btn', 'btn-sm', 'btn-danger', 'ml-2');
+                deleteButton.onclick = () => deleteReservation(reservation.id);
+                li.appendChild(deleteButton);
+
+                reservationList.appendChild(li);
+            });
+        }
+
+        // Função para obter o nome do cliente com base no ID
+        function getClientName(clientId) {
+            const client = clients.find(client => client.id === clientId);
+            return client ? client.name + ' - ' + client.cpf_cnpj : 'Cliente não encontrado';
+        }
+
+        // Função para obter o número do quarto com base no ID
+        function getRoomNumber(roomId) {
+            const room = rooms.find(room => room.id === roomId);
+            return room ? room.number : 'Quarto não encontrado';
+        }
+
+        // Função para gerar IDs únicos
+        function generateId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Função para salvar dados no armazenamento local
+        function saveData(texto, tipo) {
+            let msg = []
+            texto != null && tipo != null ? msg = [texto, tipo] : msg = []
+            localStorage.setItem('clients', JSON.stringify(clients));
+            localStorage.setItem('rooms', JSON.stringify(rooms));
+            localStorage.setItem('reservations', JSON.stringify(reservations));
+            localStorage.setItem('paginaExibida', JSON.stringify(paginaExibida));
+            localStorage.setItem('mensagem', JSON.stringify(msg));
+            location.reload();
+        }
+
+        // Função para exibir mensagens de aviso
+        function displayMessage(message, className) {
+            const alertArea = document.getElementById('alertArea');
+            const div = document.createElement('div');
+            div.className = `alert ${className}`;
+            div.textContent = message;
+            alertArea.appendChild(div);
+            setTimeout(() => div.remove(), 5000); // Remover mensagem após 5 segundos
+        }
+
+        function filtrarReservasChegada() {
+            const inputDate = document.getElementById('dataAtual').value;
+            const reservasBody = document.getElementById('reservasChegadaBody');
+
+            // Limpa a tabela de reservas
+            reservasBody.innerHTML = '';
+
+            // Filtra as reservas com base na data selecionada
+            const reservasFiltradas = reservations.filter(reserva =>
+                reserva.checkInDate === inputDate
+            );
+
+            // Exibe as reservas encontradas na tabela
+            reservasFiltradas.forEach(reserva => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${getClientName(reserva.clientId)}</td>
+                    <td>${getRoomNumber(reserva.roomId)}</td>
+                    <td><input disabled type="date" style="background-color: white; border: 0px;color: black" value="${reserva.checkInDate}"></td>
+                    <td><input disabled type="date" style="background-color: white; border: 0px;color: black" value="${reserva.checkOutDate}"></td>
+                    <td>${reserva.value}</td>
+                `;
+                reservasBody.appendChild(row);
+            });
+        }
+
+
+        function filtrarReservasSaida() {
+            const inputDate = document.getElementById('dataAtual').value;
+            const reservasBody = document.getElementById('reservasSaidaBody');
+
+            // Limpa a tabela de reservas
+            reservasBody.innerHTML = '';
+
+            // Filtra as reservas com base na data selecionada
+            const reservasFiltradas = reservations.filter(reserva =>
+                reserva.checkOutDate === inputDate
+            );
+
+            // Exibe as reservas encontradas na tabela
+            reservasFiltradas.forEach(reserva => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${getClientName(reserva.clientId)}</td>
+                    <td>${getRoomNumber(reserva.roomId)}</td>
+                    <td><input disabled type="date" style="background-color: white; border: 0px;color: black" value="${reserva.checkInDate}"></td>
+                    <td><input disabled type="date" style="background-color: white; border: 0px;color: black" value="${reserva.checkOutDate}"></td>
+                    <td>${reserva.value}</td>
+                `;
+                reservasBody.appendChild(row);
+            });
+        }
+
+
+    </script>
+
+</body>
+
+</html>
