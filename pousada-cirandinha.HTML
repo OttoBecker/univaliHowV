@@ -41,11 +41,21 @@
         <div id="startForm" style="display: none;">
             <h2 style="text-align: center;">Controle de reservas</h2>
             <div class="d-flex justify-content-center">
-                <input class="m-3" type="date" id="dataAtual" style="width: 200px;" onchange="filtrarReservasChegada(); filtrarReservasSaida();">
+                <input class="m-3" type="date" id="dataAtual" style="width: 200px;" onchange="filtrarReservasChegada(); filtrarReservasSaida(); filtrarQuartoLimpeza();">
             </div>
 
             <div class="mt-3">
-                <h2>Reservas chegando:</h2>
+                <h3>Quartos para limpeza:</h3>
+                <table id="reservasTable" class="w-100">
+                <thead>
+                <tr>
+                    <th style="width: 20%;">Número do Quarto</th>
+                </tr>
+                </thead>
+                <tbody id="quartoBody"></tbody>
+                </table>
+
+                <h3 class="mt-3">Reservas chegando:</h3>
                     <table id="reservasTable" class="w-100">
                     <thead>
                     <tr>
@@ -177,6 +187,7 @@
         }
 
         function toggleStartForm() {
+            filtrarQuartoLimpeza();
             filtrarReservasChegada();
             filtrarReservasSaida();
             const clientsForm = document.getElementById('clientsForm');
@@ -543,7 +554,7 @@
         // Função para atualizar um quarto existente
         function updateRoom(roomId) {
             const roomNumberInput = document.getElementById('roomNumberInput');
-            const newRoomNumber = roomNumberInput.value.trim();
+            const newRoomNumber = roomNumberInput.value;
 
             const isActiveCheckbox = document.getElementById('isActiveCheckboxRooms');
             const newIsActive = isActiveCheckbox.checked;
@@ -559,11 +570,12 @@
             const roomIndex = rooms.findIndex(room => room.id === roomId);
             if (roomIndex !== -1) {
                 rooms[roomIndex].number = newRoomNumber;
-                rooms[roomIndex].number = newIsClean;
+                rooms[roomIndex].clean = newIsClean;
                 rooms[roomIndex].active = newIsActive;
                 displayRooms();
                 saveData('Quarto atualizado com sucesso.', 'alert-success'); // Salvar dados
                 cancelEditRoom(); // Limpar o formulário de edição
+                
             }
         }
 
@@ -602,6 +614,7 @@
             }
 
             if (paginaExibida == "startForm"){
+                    filtrarQuartoLimpeza();
                     filtrarReservasChegada();
                     filtrarReservasSaida();
                 }
@@ -735,6 +748,28 @@
             div.textContent = message;
             alertArea.appendChild(div);
             setTimeout(() => div.remove(), 5000); // Remover mensagem após 5 segundos
+        }
+
+        function filtrarQuartoLimpeza() {
+            const quartoBody = document.getElementById('quartoBody');
+
+            quartoBody.innerHTML = '';
+
+
+            console.log(rooms)
+
+            const quartosFiltrados = rooms.filter(quartos =>
+                quartos.clean === false && quartos.active === true           
+            );
+
+            // Exibe as reservas encontradas na tabela
+            quartosFiltrados.forEach(quartos => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${quartos.number}</td>
+                `;
+                quartoBody.appendChild(row);
+            });
         }
 
         function filtrarReservasChegada() {
